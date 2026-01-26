@@ -108,6 +108,18 @@ jobs:
             -e PPPOE_PASSWORD=${{ inputs.pppoe_password }} \
           immortalwrt/imagebuilder:x86-64-openwrt-${luci_version} /bin/bash /home/build/immortalwrt/build.sh
           
+      - name: Export rootfs
+        run: |
+          echo "Exporting rootfs..."
+          mkdir -p rootfs_export
+          cp -a bin/targets/x86/64/*rootfs* rootfs_export/ || true
+          cp -a build_dir/target-*/root-*/ rootfs_export/ || true
+
+      - name: Upload rootfs artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: rootfs
+          path: rootfs_export/
 
       - name: Create info
         run: |
